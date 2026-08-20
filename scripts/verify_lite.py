@@ -103,7 +103,7 @@ def main() -> int:
         gap = leakage_experiment(ev, "session_id").set_index("encoding").loc["target-naive", "gap"]
         assert gap > 0.20, f"target-encoding leak demo no longer reproduces (gap={gap:.3f})"
 
-        print("\nAll checks passed — lite path is ready. Run `make api` then `make benchmark`.")
+        print("\nAll checks passed - lite path is ready. Run `make api` then `make benchmark`.")
         return 0
     except Exception as exc:  # noqa: BLE001
         print(f"\nSmoke test FAILED: {type(exc).__name__}: {exc}")

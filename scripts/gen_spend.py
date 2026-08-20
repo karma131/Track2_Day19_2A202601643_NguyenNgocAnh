@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import sys
+from datetime import timedelta
 from pathlib import Path
 
 import numpy as np
@@ -15,17 +16,18 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(42)
     users = [f"u_{i:03d}" for i in range(50)]
-    now = pd.Timestamp.utcnow().tz_convert("UTC").floor("h")
+    now = pd.Timestamp.now(tz="UTC").floor("h")
     rows = []
     for u in users:
         base = float(rng.uniform(50_000, 5_000_000))   # VND, wide spread on purpose
         for days_ago in (2, 1, 0):
+            offset = timedelta(days=days_ago)
             rows.append({
                 "user_id": u,
-                "event_timestamp": now - pd.Timedelta(f"{days_ago}D"),
+                "event_timestamp": now - offset,
                 "avg_amount_7d": round(base * float(rng.uniform(0.9, 1.1)), 2),
                 "txn_count_7d": int(rng.integers(3, 40)),
-                "created": now - pd.Timedelta(f"{days_ago}D"),
+                "created": now - offset,
             })
     df = pd.DataFrame(rows)
     path = OUT / "user_spend.parquet"
